@@ -8,7 +8,7 @@ package config;
 
 public class Config {
 
-    public static final String FILE_NAME = "3";
+    public static final String FILE_NAME = "1";
     public static final String FILE_FORMAT = "txt";
     public static final String IN_FILE_PATH = System.getProperty("user.dir") + "/files/in/" + FILE_NAME + "." + FILE_FORMAT;
 }

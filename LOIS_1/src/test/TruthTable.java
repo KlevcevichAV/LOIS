@@ -9,6 +9,7 @@ package test;
 public class TruthTable {
     private final int rows;
     private int[][] table;
+    private int countCon;
 
     public TruthTable(int n) {
         rows = (int) Math.pow(2, n);
@@ -19,12 +20,14 @@ public class TruthTable {
     private boolean createTable(int n) {
         boolean checkTrue = false;
         boolean checkFalse = false;
+        countCon = 0;
         for (int i = 0; i < rows; i++) {
             for (int j = n - 1; j >= 0; j--) {
                 table[i][j] = (i / (int) Math.pow(2, j)) % 2;
             }
             table[i][n] = (int) (Math.random() * 2);
             if (table[i][n] == 0) {
+                countCon++;
                 checkFalse = true;
             }
             if (table[i][n] == 0) {
@@ -40,5 +43,9 @@ public class TruthTable {
 
     public int getRows() {
         return rows;
+    }
+
+    public int getCountCon() {
+        return countCon;
     }
 }

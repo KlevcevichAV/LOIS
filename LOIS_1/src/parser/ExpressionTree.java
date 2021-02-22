@@ -8,34 +8,61 @@ package parser;
 
 public class ExpressionTree {
     private String expression;
+    private String operation;
     private ExpressionTree left;
     private ExpressionTree right;
     private final Parser root;
 
-    public ExpressionTree(String expression, Parser root) {
+    public ExpressionTree(String expression, Parser root) throws SKNFException {
         this.expression = expression;
         this.root = root;
-        if (expression.length() < 3) {
+        if (expression.length() == 1) {
             left = right = null;
-            if (expression.charAt(0) == '!') {
-                root.addElements((expression.length() != 2) ? expression : ("" + expression.charAt(1)));
-            } else {
-                root.addElements(expression);
-            }
+            root.addElements(expression);
             return;
         }
-        int checkSign = searchSignOutsideBrackets();
-        if (checkSign == -1) {
+        if (expression.charAt(0) == '!') {
+            this.operation = "!";
+            right = null;
+            left = new ExpressionTree(copy(expression, 1, expression.length()), root);
+            return;
+        }
+        try {
             withoutBrackets();
-        } else {
-            left = new ExpressionTree(copy(0, checkSign), root);
-            right = new ExpressionTree(copy(checkSign + 1, expression.length()), root);
-            this.expression = "" + expression.charAt(checkSign);
+        } catch (SKNFException sknfException) {
+            throw new SKNFException(sknfException.getNumber());
         }
 
     }
 
-    private String copy(int start, int end) {
+    private void withoutBrackets() throws SKNFException {
+        if (expression.charAt(0) == '(' && expression.charAt(expression.length() - 1) == ')') {
+            String expression = copy(this.expression, 1, this.expression.length() - 1);
+            int pointerSign = searchSignOutsideBrackets(expression);
+            if (pointerSign == 0) {
+                right = null;
+                left = new ExpressionTree(expression, root);
+                operation = expression.charAt(pointerSign) + "";
+                return;
+            }
+            // !
+            if (pointerSign == -1) {
+                throw new SKNFException(3);
+            }
+            operation = ((expression.charAt(pointerSign) != '-') ? expression.charAt(pointerSign) : "" + expression.charAt(pointerSign) + expression.charAt(pointerSign + 1)) + "";
+            String leftExpression = copy(expression, 0, pointerSign);
+            if(expression.charAt(pointerSign) == '-'){
+                pointerSign += 1;
+            }
+            String rightExpression = copy(expression, pointerSign + 1, expression.length());
+            left = new ExpressionTree(leftExpression, root);
+            right = new ExpressionTree(rightExpression, root);
+        } else {
+            throw new SKNFException(11);
+        }
+    }
+
+    private String copy(String expression, int start, int end) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = start; i < end; i++) {
             stringBuilder.append(expression.charAt(i));
@@ -43,11 +70,11 @@ public class ExpressionTree {
         return stringBuilder.toString();
     }
 
-    private int searchSignOutsideBrackets() {
+    private int searchSignOutsideBrackets(String expression) {
         int check = 0;
         for (int i = 0; i < expression.length(); i++) {
             if ((expression.charAt(i) != '(' && expression.charAt(i) != ')') && check == 0) {
-                if (Constant.SIGNS.contains("" + expression.charAt(i)) && expression.charAt(i) != '!') {
+                if (Constant.SIGNS.contains("" + ((expression.charAt(i) != '-') ? expression.charAt(i) : "" + expression.charAt(i) + expression.charAt(i + 1)))) {
                     return i;
                 }
             }
@@ -60,12 +87,6 @@ public class ExpressionTree {
         return -1;
     }
 
-    private void withoutBrackets() {
-        String expression = copy(1, this.expression.length() - 1);
-        left = new ExpressionTree(expression, root);
-        right = null;
-    }
-
     public String getExpression() {
         return expression;
     }
@@ -76,5 +97,9 @@ public class ExpressionTree {
 
     public ExpressionTree getRight() {
         return right;
+    }
+
+    public String getOperation() {
+        return operation;
     }
 }

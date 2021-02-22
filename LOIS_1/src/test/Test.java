@@ -25,18 +25,26 @@ public class Test {
         }
     }
 
-    private void generateFormula(){
+    private void generateFormula() {
         int countElements = 2 + (int) (Math.random() * 2);
         TruthTable truthTable = new TruthTable(countElements);
-        StringBuilder builder = new StringBuilder("(");
+        StringBuilder builder = new StringBuilder("");
+        for (int i = 0; i < truthTable.getCountCon() - 1; i++){
+            builder.append("(");
+        }
+        int count = 0;
         for (int j = 0; j < truthTable.getRows(); j++) {
             if (truthTable.getTable()[j][countElements] == 0) {
-                builder.append(createAtoms(countElements, truthTable.getTable()[j])).append("&");
+                builder.append(createAtom(countElements, truthTable.getTable()[j]));
+                if(count != 0){
+                    builder.append(")");
+                }
+                builder.append("&");
+                count++;
             }
         }
         builder.deleteCharAt(builder.length() - 1);
         int checkTrue = (int) (Math.random() * 2);
-        builder.append(")");
         if ((checkTrue == 0)) {
             test.add(builder.toString());
         } else {
@@ -44,13 +52,21 @@ public class Test {
         }
     }
 
-    private String createAtoms(int countElements, int[] rowTruthTable) {
-        StringBuilder atom = new StringBuilder("(");
+    private String createAtom(int countElements, int[] rowTruthTable) {
+        StringBuilder atom = new StringBuilder();
+        for (int i = 0; i < countElements - 1; i++){
+            atom.append("(");
+        }
+        int count = 0;
         for (int i = 0; i < countElements; i++) {
-            atom.append((rowTruthTable[i] == 0) ? Constant.SYMBOLS.get(i) : ("!" + Constant.SYMBOLS.get(i))).append("|");
+            atom.append((rowTruthTable[i] == 0) ? Constant.SYMBOLS.get(i) : ("(!" + Constant.SYMBOLS.get(i) + ")"));
+            if(count != 0){
+                atom.append(")");
+            }
+            atom.append("|");
+            count++;
         }
         atom.setLength(atom.length() - 1);
-        atom.append(")");
         return atom.toString();
     }
 

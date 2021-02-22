@@ -8,12 +8,14 @@ package parser;
 
 public class SKNFException extends Exception {
     private String message;
+    private int number;
 
     public String getMessage() {
         return message;
     }
 
     public SKNFException(int number) {
+        this.number = number;
         switch (number) {
             case 1: {
                 message = "More open brackets!";
@@ -51,7 +53,18 @@ public class SKNFException extends Exception {
                 message = "Repeated atom!";
                 break;
             }
+            case 10: {
+                message = "Negation is not with the element!";
+                break;
+            }
+            case 11: {
+                message = "Not enough brackets";
+                break;
+            }
         }
     }
 
+    public int getNumber() {
+        return number;
+    }
 }
