@@ -7,8 +7,6 @@
 package parser;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Parser {
     private String expression;
@@ -33,14 +31,14 @@ public class Parser {
             if (ATOMS.size() != ATOMS.stream().distinct().count()) {
                 throw new SKNFException(9);
             }
-            if(ATOMS.size() == 1){
+            if (ATOMS.size() == 1) {
                 int count = 0;
-                for(int i = 0; i < ATOMS.get(0).length(); i++){
-                    if(ATOMS.get(0).charAt(i) == '|'){
+                for (int i = 0; i < ATOMS.get(0).length(); i++) {
+                    if (ATOMS.get(0).charAt(i) == '|') {
                         count++;
                     }
                 }
-                if(count > 1){
+                if (count > 1) {
                     throw new SKNFException(4);
                 }
             }
@@ -58,15 +56,22 @@ public class Parser {
     private void checkSymbols() throws SKNFException {
         for (int i = 0; i < expression.length(); i++) {
             if (!(Constant.SYMBOLS.contains("" + expression.charAt(i)) || Constant.SIGNS.contains("" + expression.charAt(i)))) {
-                if (expression.charAt(i) == '-' && i != expression.length() - 1) {
-                    if (expression.charAt(i + 1) != '>') {
-                        throw new SKNFException(6);
-                    } else {i++;}
-                } else {
+                String sign = searchSign(expression, i);
+                if (!Constant.SIGNS.contains(sign)) {
                     throw new SKNFException(6);
+                } else {
+                    if (sign.length() == 2) {
+                        i++;
+                    }
                 }
             }
         }
+    }
+
+    private String searchSign(String expression, int pointer) {
+        if (expression.charAt(pointer) == '!' || expression.charAt(pointer) == '~')
+            return expression.charAt(pointer) + "";
+        return "" + expression.charAt(pointer) + expression.charAt(pointer + 1);
     }
 
     private void checkBrackets() throws SKNFException {
@@ -100,7 +105,7 @@ public class Parser {
     }
 
     private void searchAtoms(ExpressionTree tree) throws SKNFException {
-        if ("&".equals(tree.getOperation())) {
+        if ("/\\".equals(tree.getOperation())) {
             searchAtoms(tree.getLeft());
             searchAtoms(tree.getRight());
         } else {
@@ -142,7 +147,7 @@ public class Parser {
                     if (element.equals("" + atom.charAt(i))) {
                         count++;
                     }
-                    if (atom.charAt(i) == '!'){
+                    if (atom.charAt(i) == '!') {
                         i++;
                     }
                 }
@@ -154,7 +159,7 @@ public class Parser {
 
     private void checkAtomsForOperations() throws SKNFException {
         for (String atom : ATOMS) {
-            if (atom.contains("&")) {
+            if (atom.contains("/\\")) {
                 throw new SKNFException(7);
             }
         }

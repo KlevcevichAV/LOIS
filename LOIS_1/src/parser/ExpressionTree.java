@@ -42,16 +42,16 @@ public class ExpressionTree {
             if (pointerSign == 0) {
                 right = null;
                 left = new ExpressionTree(expression, root);
-                operation = expression.charAt(pointerSign) + "";
+                operation = searchSign(expression, pointerSign);
                 return;
             }
             // !
             if (pointerSign == -1) {
                 throw new SKNFException(3);
             }
-            operation = ((expression.charAt(pointerSign) != '-') ? expression.charAt(pointerSign) : "" + expression.charAt(pointerSign) + expression.charAt(pointerSign + 1)) + "";
+            operation = searchSign(expression, pointerSign);
             String leftExpression = copy(expression, 0, pointerSign);
-            if(expression.charAt(pointerSign) == '-'){
+            if (operation.length() == 2) {
                 pointerSign += 1;
             }
             String rightExpression = copy(expression, pointerSign + 1, expression.length());
@@ -74,7 +74,8 @@ public class ExpressionTree {
         int check = 0;
         for (int i = 0; i < expression.length(); i++) {
             if ((expression.charAt(i) != '(' && expression.charAt(i) != ')') && check == 0) {
-                if (Constant.SIGNS.contains("" + ((expression.charAt(i) != '-') ? expression.charAt(i) : "" + expression.charAt(i) + expression.charAt(i + 1)))) {
+                String sign = searchSign(expression, i);
+                if (Constant.SIGNS.contains(sign)) {
                     return i;
                 }
             }
@@ -85,6 +86,12 @@ public class ExpressionTree {
             }
         }
         return -1;
+    }
+
+    private String searchSign(String expression, int pointer) {
+        if (expression.charAt(pointer) == '!' || expression.charAt(pointer) == '~')
+            return expression.charAt(pointer) + "";
+        return "" + expression.charAt(pointer) + expression.charAt(pointer + 1);
     }
 
     public String getExpression() {

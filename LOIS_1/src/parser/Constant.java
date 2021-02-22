@@ -12,5 +12,5 @@ import java.util.List;
 
 public class Constant {
     public static final List<String> SYMBOLS = new ArrayList<>(Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"));
-    public static final List<String> SIGNS = new ArrayList<>(Arrays.asList("!", "&", "|", "(", ")", "->", "~"));
+    public static final List<String> SIGNS = new ArrayList<>(Arrays.asList("!", "/\\", "\\/", "(", ")", "->", "~"));
 }

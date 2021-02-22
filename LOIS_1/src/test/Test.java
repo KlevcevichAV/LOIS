@@ -29,22 +29,23 @@ public class Test {
         int countElements = 2 + (int) (Math.random() * 2);
         TruthTable truthTable = new TruthTable(countElements);
         StringBuilder builder = new StringBuilder("");
-        for (int i = 0; i < truthTable.getCountCon() - 1; i++){
+        for (int i = 0; i < truthTable.getCountCon() - 1; i++) {
             builder.append("(");
         }
         int count = 0;
         for (int j = 0; j < truthTable.getRows(); j++) {
             if (truthTable.getTable()[j][countElements] == 0) {
                 builder.append(createAtom(countElements, truthTable.getTable()[j]));
-                if(count != 0){
+                if (count != 0) {
                     builder.append(")");
                 }
-                builder.append("&");
+                builder.append("/\\");
                 count++;
             }
         }
-        builder.deleteCharAt(builder.length() - 1);
+        builder.setLength(builder.length() - 2);
         int checkTrue = (int) (Math.random() * 2);
+//        test.add(builder.toString());
         if ((checkTrue == 0)) {
             test.add(builder.toString());
         } else {
@@ -54,37 +55,40 @@ public class Test {
 
     private String createAtom(int countElements, int[] rowTruthTable) {
         StringBuilder atom = new StringBuilder();
-        for (int i = 0; i < countElements - 1; i++){
+        for (int i = 0; i < countElements - 1; i++) {
             atom.append("(");
         }
         int count = 0;
         for (int i = 0; i < countElements; i++) {
             atom.append((rowTruthTable[i] == 0) ? Constant.SYMBOLS.get(i) : ("(!" + Constant.SYMBOLS.get(i) + ")"));
-            if(count != 0){
+            if (count != 0) {
                 atom.append(")");
             }
-            atom.append("|");
+            atom.append("\\/");
             count++;
         }
-        atom.setLength(atom.length() - 1);
+        atom.setLength(atom.length() - 2);
         return atom.toString();
     }
 
     private String makeError(String expression, int countElements) {
         int typeError = (int) (Math.random() * 3);
         switch (typeError) {
+//            change con on dis
             case 0: {
-                int countConjunction = count(expression, "&");
+                int countConjunction = count(expression, "/\\");
                 int changeConjunction = 1 + (int) (Math.random() * countConjunction);
-                return changeSign(expression, '&', changeConjunction);
+                return changeSign(expression, "/\\", changeConjunction);
             }
+//            change con on dis
             case 1: {
-                int countDisjunction = count(expression, "|");
+                int countDisjunction = count(expression, "\\/");
                 int changeDisjunction = 1 + (int) (Math.random() * countDisjunction);
-                return changeSign(expression, '|', changeDisjunction);
+                return changeSign(expression, "\\/", changeDisjunction);
             }
             case 2: {
-                return findDeletedSymbol(countElements, expression);
+//                return findDeletedSymbol(countElements, expression);
+                return expression;
             }
             default:
                 return "";
@@ -156,24 +160,29 @@ public class Test {
         return (str.length() - str.replace(target, "").length()) / target.length();
     }
 
-    private String changeSign(String expression, char character, int position) {
-        StringBuilder builder = new StringBuilder(expression);
-        char newCharacter = (character == '&') ? '|' : '&';
-        int number = findSignForCount(expression, character, position);
-        if (number != -1) {
-            builder.setCharAt(number, newCharacter);
-        }
-        return builder.toString();
+    private String changeSign(String expression, String character, int position) {
+        String newCharacter = ("'/\\".equals(character)) ? "\\/" : "/\\";
+        int positionSign = findSignForCount(expression, character, position);
+        String result = copy(expression, 0, positionSign) + newCharacter + copy(expression, positionSign + 2, expression.length());
+        return result;
     }
 
-    private int findSignForCount(String expression, char sign, int counter) {
+    private String copy(String expression, int start, int end) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = start; i < end; i++) {
+            stringBuilder.append(expression.charAt(i));
+        }
+        return stringBuilder.toString();
+    }
+
+    private int findSignForCount(String expression, String sign, int counter) {
         int tempCount = 0;
         for (int i = 0; i < expression.length(); i++) {
-            if (expression.charAt(i) == sign) {
+            if (sign.equals("" + expression.charAt(i) + expression.charAt(i + 1))) {
                 tempCount++;
-            }
-            if (tempCount == counter) {
-                return i;
+                if (tempCount == counter) {
+                    return i;
+                }
             }
         }
         return -1;
