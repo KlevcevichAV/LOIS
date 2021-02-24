@@ -86,48 +86,9 @@ public class Test {
                 int changeDisjunction = 1 + (int) (Math.random() * countDisjunction);
                 return changeSign(expression, "\\/", changeDisjunction);
             }
-            case 2: {
-//                return findDeletedSymbol(countElements, expression);
-                return expression;
-            }
             default:
                 return "";
         }
-    }
-
-    private String findDeletedSymbol(int countElements, String expression) {
-        int counterSymbols = 0;
-        for (int i = 0; i < countElements; i++) {
-            for (int j = 0; j < expression.length(); j++) {
-                if (Constant.SYMBOLS.contains("" + expression.charAt(j))) {
-                    counterSymbols++;
-                }
-            }
-        }
-        int pointerDeletedSymbol = 1 + (int) (Math.random() * counterSymbols);
-        counterSymbols = 0;
-        for (int i = 0; i < countElements; i++) {
-            for (int j = 0; j < expression.length(); j++) {
-                if (Constant.SYMBOLS.contains("" + expression.charAt(j))) {
-                    if (counterSymbols == pointerDeletedSymbol - 1) {
-                        StringBuilder builder = new StringBuilder(expression);
-                        if (j == 0) {
-                            builder.delete(j, 2);
-                        } else {
-                            if (expression.charAt(j - 1) == '!') {
-                                builder.delete(((expression.charAt(j - 2) == '(') ? (j - 1) : (j - 2)), ((expression.charAt(j - 2) == '(') ? (j + 2) : (j + 1)));
-                            } else {
-                                builder.delete(((expression.charAt(j - 1) == '(') ? j : (j - 1)), ((expression.charAt(j - 1) == '(') ? (j + 2) : (j + 1)));
-                            }
-                        }
-                        return builder.toString();
-                    } else {
-                        counterSymbols++;
-                    }
-                }
-            }
-        }
-        return expression;
     }
 
     public void run() {
@@ -177,7 +138,7 @@ public class Test {
 
     private int findSignForCount(String expression, String sign, int counter) {
         int tempCount = 0;
-        for (int i = 0; i < expression.length(); i++) {
+        for (int i = 0; i < expression.length() - 1; i++) {
             if (sign.equals("" + expression.charAt(i) + expression.charAt(i + 1))) {
                 tempCount++;
                 if (tempCount == counter) {
