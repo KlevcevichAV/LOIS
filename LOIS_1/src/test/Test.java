@@ -6,7 +6,7 @@
 
 package test;
 
-import parser.Constant;
+import config.Config;
 import parser.Parser;
 
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ public class Test {
         }
         int count = 0;
         for (int i = 0; i < countElements; i++) {
-            atom.append((rowTruthTable[i] == 0) ? Constant.SYMBOLS.get(i) : ("(!" + Constant.SYMBOLS.get(i) + ")"));
+            atom.append((rowTruthTable[i] == 0) ? Config.SYMBOLS.get(i) : ("(!" + Config.SYMBOLS.get(i) + ")"));
             if (count != 0) {
                 atom.append(")");
             }

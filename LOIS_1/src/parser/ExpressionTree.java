@@ -6,6 +6,8 @@
 
 package parser;
 
+import config.Config;
+
 public class ExpressionTree {
     private String expression;
     private String operation;
@@ -75,7 +77,7 @@ public class ExpressionTree {
         for (int i = 0; i < expression.length(); i++) {
             if ((expression.charAt(i) != '(' && expression.charAt(i) != ')') && check == 0) {
                 String sign = searchSign(expression, i);
-                if (Constant.SIGNS.contains(sign)) {
+                if (Config.SIGNS.contains(sign)) {
                     return i;
                 }
             }

@@ -6,6 +6,8 @@
 
 package parser;
 
+import config.Config;
+
 import java.util.*;
 
 public class Parser {
@@ -59,9 +61,9 @@ public class Parser {
 
     private void checkSymbols() throws SKNFException {
         for (int i = 0; i < EXPRESSION.length(); i++) {
-            if (!(Constant.SYMBOLS.contains("" + EXPRESSION.charAt(i)) || Constant.SIGNS.contains("" + EXPRESSION.charAt(i)))) {
+            if (!(Config.SYMBOLS.contains("" + EXPRESSION.charAt(i)) || Config.SIGNS.contains("" + EXPRESSION.charAt(i)))) {
                 String sign = searchSign(EXPRESSION, i);
-                if (!Constant.SIGNS.contains(sign)) {
+                if (!Config.SIGNS.contains(sign)) {
                     throw new SKNFException(6);
                 } else {
                     if (sign.length() == 2) {
