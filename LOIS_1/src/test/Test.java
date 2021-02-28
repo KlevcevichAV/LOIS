@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Test {
-    private List<String> test;
+    private final List<String> test;
     private final int COUNT_QUESTIONS = 10;
 
     public Test() {
@@ -28,7 +28,7 @@ public class Test {
     private void generateFormula() {
         int countElements = 2 + (int) (Math.random() * 2);
         TruthTable truthTable = new TruthTable(countElements);
-        StringBuilder builder = new StringBuilder("");
+        StringBuilder builder = new StringBuilder();
         for (int i = 0; i < truthTable.getCountCon() - 1; i++) {
             builder.append("(");
         }
@@ -44,12 +44,12 @@ public class Test {
             }
         }
         builder.setLength(builder.length() - 2);
-        int checkTrue = (int) (Math.random() * 2);
-//        test.add(builder.toString());
-        if ((checkTrue == 0)) {
+        int checkTrue = (int) (Math.random() * 100);
+        if ((checkTrue % 2 == 0)) {
             test.add(builder.toString());
         } else {
-            test.add(makeError(builder.toString(), countElements));
+            String wrongExpression = makeError(builder.toString(), countElements);
+            test.add(wrongExpression);
         }
     }
 
@@ -86,9 +86,104 @@ public class Test {
                 int changeDisjunction = 1 + (int) (Math.random() * countDisjunction);
                 return changeSign(expression, "\\/", changeDisjunction);
             }
+//            delete brackets
+            case 2: {
+                return deleteBrackets(expression);
+            }
             default:
                 return "";
         }
+    }
+
+    private int count(String str, String target) {
+        return (str.length() - str.replace(target, "").length()) / target.length();
+    }
+
+    private String changeSign(String expression, String character, int position) {
+        String newCharacter = ("/\\".equals(character)) ? "\\/" : "/\\";
+        int positionSign = findSignForCount(expression, character, position);
+        if (positionSign != -1) {
+            return copy(expression, 0, positionSign) + newCharacter + copy(expression, positionSign + 2, expression.length());
+        } else {
+            positionSign = findSignForCount(expression, newCharacter, position);
+            return copy(expression, 0, positionSign) + character + copy(expression, positionSign + 2, expression.length());
+        }
+    }
+
+    private String deleteBrackets(String expression) {
+        StringBuilder builder = new StringBuilder();
+        int countOpenBrackets = countOpenBrackets(expression);
+        int numberDeletedBracket = 1 + (int) (Math.random() * countOpenBrackets);
+        int positionDeletedOpenBracket = searchPositionDeletedOpenBracket(expression, numberDeletedBracket);
+        int positionDeletedClosedBracket = searchPositionDeletedClosedBracket(expression, positionDeletedOpenBracket);
+        builder.append(copy(expression, 0, positionDeletedOpenBracket)).
+                append(copy(expression, positionDeletedOpenBracket + 1, positionDeletedClosedBracket)).
+                append(copy(expression, positionDeletedClosedBracket + 1, expression.length()));
+        return builder.toString();
+    }
+
+    private int countOpenBrackets(String expression) {
+        int count = 0;
+        for (int i = 0; i < expression.length(); i++) {
+            if (expression.charAt(i) == '(') {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private int searchPositionDeletedOpenBracket(String expression, int numberDeletedBrackets) {
+        int count = 0;
+        for (int i = 0; i < expression.length(); i++) {
+            if (expression.charAt(i) == '(') {
+                count++;
+            }
+            if(numberDeletedBrackets == count){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private int searchPositionDeletedClosedBracket(String expression, int positionOpenClosed) {
+        int check = 0;
+        int saveCheck = -1;
+        for (int i = 0; i < expression.length(); i++) {
+            if (expression.charAt(i) == '(') {
+                check++;
+            }
+            if(expression.charAt(i) == ')'){
+                check--;
+            }
+            if(i == positionOpenClosed){
+                saveCheck = check - 1;
+            }
+            if(saveCheck != -1 && check == saveCheck){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private String copy(String expression, int start, int end) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = start; i < end; i++) {
+            stringBuilder.append(expression.charAt(i));
+        }
+        return stringBuilder.toString();
+    }
+
+    private int findSignForCount(String expression, String sign, int counter) {
+        int tempCount = 0;
+        for (int i = 0; i < expression.length() - 1; i++) {
+            if (sign.equals("" + expression.charAt(i) + expression.charAt(i + 1))) {
+                tempCount++;
+                if (tempCount == counter) {
+                    return i;
+                }
+            }
+        }
+        return -1;
     }
 
     public void run() {
@@ -114,38 +209,6 @@ public class Test {
             }
         }
 
-        System.out.printf("Your result: %s(%d of %d)", result, result, test.size());
-    }
-
-    private int count(String str, String target) {
-        return (str.length() - str.replace(target, "").length()) / target.length();
-    }
-
-    private String changeSign(String expression, String character, int position) {
-        String newCharacter = ("'/\\".equals(character)) ? "\\/" : "/\\";
-        int positionSign = findSignForCount(expression, character, position);
-        String result = copy(expression, 0, positionSign) + newCharacter + copy(expression, positionSign + 2, expression.length());
-        return result;
-    }
-
-    private String copy(String expression, int start, int end) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = start; i < end; i++) {
-            stringBuilder.append(expression.charAt(i));
-        }
-        return stringBuilder.toString();
-    }
-
-    private int findSignForCount(String expression, String sign, int counter) {
-        int tempCount = 0;
-        for (int i = 0; i < expression.length() - 1; i++) {
-            if (sign.equals("" + expression.charAt(i) + expression.charAt(i + 1))) {
-                tempCount++;
-                if (tempCount == counter) {
-                    return i;
-                }
-            }
-        }
-        return -1;
+        System.out.printf("Your result: %d(%d of %d)", result, result, test.size());
     }
 }
