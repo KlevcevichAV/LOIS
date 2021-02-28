@@ -43,7 +43,7 @@ public class ExpressionTree {
             int pointerSign = searchSignOutsideBrackets(expression);
             if (pointerSign == 0) {
                 right = null;
-                left = new ExpressionTree(expression, root);
+                left = new ExpressionTree(copy(expression, 1, expression.length()), root);
                 operation = searchSign(expression, pointerSign);
                 return;
             }
