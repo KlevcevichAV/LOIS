@@ -5,6 +5,7 @@
 // Класс предназначен для проверки формулы и для проверки знаний пользователя
 
 import config.Config;
+import parser.Formula;
 import parser.Parser;
 
 import java.io.FileInputStream;
@@ -28,9 +29,10 @@ public class Main {
 
         System.out.println(expression);
         System.out.println();
-        Parser parser = new Parser(expression);
+//        Parser parser = new Parser(expression);
+        Formula formula = new Formula(expression);
         System.out.println();
-        System.out.println(parser.getMessage());
+        System.out.println(formula.getResultParser());
         System.out.println("\n");
     }
 }

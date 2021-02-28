@@ -6,6 +6,8 @@
 
 package parser;
 
+import java.util.List;
+
 public class TruthTable {
     private final int countElements;
     private final int countRows;
@@ -34,6 +36,10 @@ public class TruthTable {
         return table[i];
     }
 
+    public int getValueRow(int i){
+        return table[i][countElements];
+    }
+
     public int getCountRows() {
         return countRows;
     }
@@ -42,7 +48,21 @@ public class TruthTable {
         table[i][countElements] = value ? 1 : 0;
     }
 
-    public void output() {
+    public int countDis(){
+        int result = 0;
+        for(int i = 0; i < countRows; i++){
+            if(table[i][countElements] == 1){
+                result++;
+            }
+        }
+        return result;
+    }
+
+    public void output(List<String> elements) {
+        for (String element : elements){
+            System.out.print(element + " ");
+        }
+        System.out.println();
         for (int i = 0; i < countRows; i++) {
             for (int j = 0; j <= countElements; j++) {
                 System.out.print(table[i][j] + " ");

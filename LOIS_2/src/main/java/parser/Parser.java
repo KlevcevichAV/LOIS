@@ -29,11 +29,8 @@ public class Parser {
         message = "";
         try {
             checkFormula(expression);
-            tree = new ExpressionTree(expression, this);
-            createTruthTable();
             result = true;
             message = "Good!";
-            truthTable.output();
         } catch (SKNFException SKNFException) {
             message = SKNFException.getMessage();
         }
@@ -42,43 +39,6 @@ public class Parser {
     private void checkFormula(String expression) throws SKNFException {
         checkSymbols();
         checkBrackets();
-        tree = new ExpressionTree(expression, this);
-    }
-
-    private void createTruthTable() throws SKNFException {
-        truthTable = new TruthTable(ELEMENTS.size());
-        for (int i = 0; i < truthTable.getCountRows(); i++) {
-            truthTable.setValueRow(i, determineValue(truthTable.getRow(i), tree));
-        }
-    }
-
-    private boolean determineValue(int[] value, ExpressionTree tree) throws SKNFException {
-        switch (tree.getOperation()) {
-            case CONJUNCTION: {
-                return determineValue(value, tree.getLeft()) & determineValue(value, tree.getRight());
-            }
-            case DISJUNCTION: {
-                return determineValue(value, tree.getLeft()) | determineValue(value, tree.getRight());
-            }
-            case NEGATION: {
-                return !determineValue(value, tree.getLeft());
-            }
-            case IMPLICATION: {
-                return !determineValue(value, tree.getLeft()) | determineValue(value, tree.getRight());
-            }
-            case EQUIVALENCE: {
-                return (!determineValue(value, tree.getLeft()) & !determineValue(value, tree.getRight())) |
-                        (determineValue(value, tree.getLeft()) & determineValue(value, tree.getRight()));
-            }
-            case "": {
-                List<String> list = new ArrayList<>(ELEMENTS);
-                return value[list.indexOf(tree.getExpression())] == 1;
-            }
-            default: {
-                //!!!!!!!!!!!!!!!!!!!!!!!!
-                throw new SKNFException(13);
-            }
-        }
     }
 
     private void checkSymbols() throws SKNFException {
