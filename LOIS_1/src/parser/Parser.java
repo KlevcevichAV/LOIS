@@ -9,15 +9,19 @@ package parser;
 import java.util.*;
 
 public class Parser {
-    private String expression;
+    private final String EXPRESSION;
+    private final String MAIN_SIGN = "/\\";
+    private final String SIGN = "\\/";
+
     private ExpressionTree tree;
     private boolean result;
     private String message;
-    private Set<String> ELEMENTS;
-    private List<String> ATOMS;
+
+    private final Set<String> ELEMENTS;
+    private final List<String> ATOMS;
 
     public Parser(String expression) {
-        this.expression = expression;
+        this.EXPRESSION = expression;
         ELEMENTS = new HashSet<>();
         ATOMS = new ArrayList<>();
         result = false;
@@ -54,9 +58,9 @@ public class Parser {
     }
 
     private void checkSymbols() throws SKNFException {
-        for (int i = 0; i < expression.length(); i++) {
-            if (!(Constant.SYMBOLS.contains("" + expression.charAt(i)) || Constant.SIGNS.contains("" + expression.charAt(i)))) {
-                String sign = searchSign(expression, i);
+        for (int i = 0; i < EXPRESSION.length(); i++) {
+            if (!(Constant.SYMBOLS.contains("" + EXPRESSION.charAt(i)) || Constant.SIGNS.contains("" + EXPRESSION.charAt(i)))) {
+                String sign = searchSign(EXPRESSION, i);
                 if (!Constant.SIGNS.contains(sign)) {
                     throw new SKNFException(6);
                 } else {
@@ -75,24 +79,24 @@ public class Parser {
     }
 
     private void checkBrackets() throws SKNFException {
-        if (expression.contains(")(")) {
+        if (EXPRESSION.contains(")(")) {
             throw new SKNFException(3);
         }
-        if (expression.charAt(0) == ')') {
+        if (EXPRESSION.charAt(0) == ')') {
             throw new SKNFException(3);
         }
-        if (expression.charAt(0) != '(' && expression.length() != 1) {
+        if (EXPRESSION.charAt(0) != '(' && EXPRESSION.length() != 1) {
             throw new SKNFException(3);
         }
-        if (expression.charAt(0) == '(' && expression.charAt(expression.length() - 1) != ')') {
+        if (EXPRESSION.charAt(0) == '(' && EXPRESSION.charAt(EXPRESSION.length() - 1) != ')') {
             throw new SKNFException(3);
         }
         int checkOpen = 0;
         int checkClose = 0;
-        for (int i = 0; i < expression.length(); i++) {
-            if (expression.charAt(i) == '(') {
+        for (int i = 0; i < EXPRESSION.length(); i++) {
+            if (EXPRESSION.charAt(i) == '(') {
                 checkOpen++;
-            } else if (expression.charAt(i) == ')') {
+            } else if (EXPRESSION.charAt(i) == ')') {
                 checkClose++;
             }
         }
@@ -105,12 +109,11 @@ public class Parser {
     }
 
     private void searchAtoms(ExpressionTree tree) throws SKNFException {
-        if ("/\\".equals(tree.getOperation())) {
+        if (MAIN_SIGN.equals(tree.getOperation())) {
             searchAtoms(tree.getLeft());
             searchAtoms(tree.getRight());
         } else {
             ATOMS.add(tree.getExpression());
-            return;
         }
 
     }
@@ -136,7 +139,6 @@ public class Parser {
     }
 
     private void checkAtomsForAllElements() throws SKNFException {
-//        if(ATOMS.size() == 1) throw new SKNFException(4);
         for (String atom : ATOMS) {
             for (String element : ELEMENTS) {
                 if (!atom.contains(element)) {
@@ -159,7 +161,7 @@ public class Parser {
 
     private void checkAtomsForOperations() throws SKNFException {
         for (String atom : ATOMS) {
-            if (atom.contains("/\\")) {
+            if (atom.contains(MAIN_SIGN)) {
                 throw new SKNFException(7);
             }
         }

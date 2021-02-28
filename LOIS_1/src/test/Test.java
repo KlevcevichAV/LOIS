@@ -17,7 +17,8 @@ import java.util.Scanner;
 public class Test {
     private final List<String> test;
     private final int COUNT_QUESTIONS = 10;
-
+    private final String MAIN_SIGN = "/\\";
+    private final String SIGN = "\\/";
     public Test() {
         test = new ArrayList<>();
         for (int i = 0; i < COUNT_QUESTIONS; i++) {
@@ -39,7 +40,7 @@ public class Test {
                 if (count != 0) {
                     builder.append(")");
                 }
-                builder.append("/\\");
+                builder.append(MAIN_SIGN);
                 count++;
             }
         }
@@ -64,7 +65,7 @@ public class Test {
             if (count != 0) {
                 atom.append(")");
             }
-            atom.append("\\/");
+            atom.append(SIGN);
             count++;
         }
         atom.setLength(atom.length() - 2);
@@ -76,15 +77,15 @@ public class Test {
         switch (typeError) {
 //            change con on dis
             case 0: {
-                int countConjunction = count(expression, "/\\");
+                int countConjunction = count(expression, MAIN_SIGN);
                 int changeConjunction = 1 + (int) (Math.random() * countConjunction);
-                return changeSign(expression, "/\\", changeConjunction);
+                return changeSign(expression, MAIN_SIGN, changeConjunction);
             }
 //            change con on dis
             case 1: {
-                int countDisjunction = count(expression, "\\/");
+                int countDisjunction = count(expression, SIGN);
                 int changeDisjunction = 1 + (int) (Math.random() * countDisjunction);
-                return changeSign(expression, "\\/", changeDisjunction);
+                return changeSign(expression, SIGN, changeDisjunction);
             }
 //            delete brackets
             case 2: {
@@ -100,7 +101,7 @@ public class Test {
     }
 
     private String changeSign(String expression, String character, int position) {
-        String newCharacter = ("/\\".equals(character)) ? "\\/" : "/\\";
+        String newCharacter = (MAIN_SIGN.equals(character)) ? SIGN : MAIN_SIGN;
         int positionSign = findSignForCount(expression, character, position);
         if (positionSign != -1) {
             return copy(expression, 0, positionSign) + newCharacter + copy(expression, positionSign + 2, expression.length());
