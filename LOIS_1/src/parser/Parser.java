@@ -37,29 +37,25 @@ public class Parser {
             if (ATOMS.size() != ATOMS.stream().distinct().count()) {
                 throw new SKNFException(9);
             }
-            if (ATOMS.size() == 1) {
-                int count = 0;
-                for (int i = 0; i < ATOMS.get(0).length(); i++) {
-                    if (ATOMS.get(0).charAt(i) == '|') {
-                        count++;
-                    }
-                }
-                if (count > 1) {
-                    throw new SKNFException(4);
-                }
-            }
             checkAtomsForAllElements();
             checkAtomsForOperations();
+            checkAtomsUnic();
 
             result = true;
             message = "Formula is SKNF!";
 
         } catch (SKNFException SKNFException) {
             message = SKNFException.getMessage();
+            message += "\nFormula isn't SKNF!";
         }
     }
 
     private void checkSymbols() throws SKNFException {
+        if (EXPRESSION.length() == 1) {
+            if (!Config.SYMBOLS.contains(EXPRESSION)) {
+                throw new SKNFException(6);
+            }
+        }
         for (int i = 0; i < EXPRESSION.length(); i++) {
             if (!(Config.SYMBOLS.contains("" + EXPRESSION.charAt(i)) || Config.SIGNS.contains("" + EXPRESSION.charAt(i)))) {
                 String sign = searchSign(EXPRESSION, i);
@@ -136,6 +132,9 @@ public class Parser {
             if (Objects.nonNull(tree.getRight())) {
                 throw new SKNFException(10);
             }
+            if ("!".equals(tree.getOperation())){
+                throw new SKNFException(12);
+            }
             if (Objects.nonNull(tree.getLeft())) checkNegation(tree.getLeft(), 1);
         }
     }
@@ -151,9 +150,9 @@ public class Parser {
                     if (element.equals("" + atom.charAt(i))) {
                         count++;
                     }
-                    if (atom.charAt(i) == '!') {
-                        i++;
-                    }
+//                    if (atom.charAt(i) == '!') {
+//                        i++;
+//                    }
                 }
                 if (count > 1) throw new SKNFException(8);
             }
@@ -167,6 +166,40 @@ public class Parser {
                 throw new SKNFException(7);
             }
         }
+    }
+
+    private void checkAtomsUnic() throws SKNFException {
+        List<String> newList = new ArrayList<>(ATOMS);
+        List<List<String>> elements = new ArrayList<>(new ArrayList<>());
+        for (int i = 0; i < newList.size(); i++) {
+            List<String> tempList = new ArrayList<>();
+            for (int j = 0; j < newList.get(i).length(); j++) {
+                String temp = "" + newList.get(i).charAt(j);
+                if ("!".equals(temp)) {
+                    j++;
+                    temp += newList.get(i).charAt(j);
+                    tempList.add(temp);
+                    continue;
+                }
+                if (Config.SYMBOLS.contains(temp)) {
+                    tempList.add(temp);
+                }
+            }
+            elements.add(tempList);
+        }
+        for (int i = 0; i < elements.size() - 1; i++) {
+            Collections.sort(elements.get(i), Collections.reverseOrder());
+        }
+        for (int i = 0; i < elements.size() - 1; i++) {
+            for (int j = 0; j < elements.size(); j++) {
+                if (i != j) {
+                    if(elements.get(i).equals(elements.get(j))){
+                        throw new SKNFException(9);
+                    }
+                }
+            }
+        }
+        System.out.println("TEST");
     }
 
     public boolean getResult() {

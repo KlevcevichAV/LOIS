@@ -61,6 +61,10 @@ public class SKNFException extends Exception {
                 message = "Not enough brackets";
                 break;
             }
+            case 12: {
+                message = "Double negative";
+                break;
+            }
         }
     }
 
