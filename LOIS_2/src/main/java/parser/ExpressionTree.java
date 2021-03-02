@@ -9,7 +9,7 @@ package parser;
 import config.Config;
 
 public class ExpressionTree {
-    private final String expression;
+    private String expression;
     private String operation;
     private ExpressionTree left;
     private ExpressionTree right;
@@ -18,16 +18,12 @@ public class ExpressionTree {
     public ExpressionTree(String expression, Parser root) throws SKNFException {
         this.expression = expression;
         this.root = root;
+        operation = "";
         if (expression.length() == 1) {
             left = right = null;
-            operation = "";
-            root.addElements(expression);
-            return;
-        }
-        if (expression.charAt(0) == '!') {
-            this.operation = "!";
-            right = null;
-            left = new ExpressionTree(copy(expression, 1, expression.length()), root);
+            if (!"1".equals(expression) && !"0".equals(expression)){
+                root.addElements(expression);
+            }
             return;
         }
         try {
@@ -41,8 +37,14 @@ public class ExpressionTree {
     private void withoutBrackets() throws SKNFException {
         if (expression.charAt(0) == '(' && expression.charAt(expression.length() - 1) == ')') {
             String expression = copy(this.expression, 1, this.expression.length() - 1);
+            if(expression.length() == 1){
+                throw new SKNFException(3);
+            }
             int pointerSign = searchSignOutsideBrackets(expression);
             if (pointerSign == 0) {
+                if(expression.charAt(pointerSign) != '!'){
+                    throw new SKNFException(3);
+                }
                 right = null;
                 left = new ExpressionTree(copy(expression, 1, expression.length()), root);
                 operation = searchSign(expression, pointerSign);

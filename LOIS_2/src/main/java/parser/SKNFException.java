@@ -14,6 +14,10 @@ public class SKNFException extends Exception {
         return message;
     }
 
+    public SKNFException(String message) {
+        this.message = message;
+    }
+
     public SKNFException(int number) {
         this.number = number;
         switch (number) {
@@ -59,6 +63,18 @@ public class SKNFException extends Exception {
             }
             case 11: {
                 message = "Not enough brackets";
+                break;
+            }
+            case 12: {
+                message = "Double negative";
+                break;
+            }
+            case 13: {
+                message = "0";
+                break;
+            }
+            case 14: {
+                message = "1";
                 break;
             }
         }

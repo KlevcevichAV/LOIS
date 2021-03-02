@@ -6,6 +6,10 @@
 
 package parser;
 
+import config.Config;
+
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 public class TruthTable {
@@ -70,4 +74,25 @@ public class TruthTable {
             System.out.println();
         }
     }
+
+    public void outputInFile(List<String> elements){
+        try (FileWriter writer = new FileWriter(Config.OUT_FILE_PATH, false))
+        {
+            for (String element : elements){
+                writer.write(element + " ");
+            }
+            writer.write("\n");
+            for (int i = 0; i < countRows; i++) {
+                for (int j = 0; j <= countElements; j++) {
+                    writer.write(table[i][j] + " ");
+                }
+                writer.write("\n");
+            }
+        }
+        catch(IOException ex){
+            System.out.println(ex.getMessage());
+        }
+    }
+
+
 }

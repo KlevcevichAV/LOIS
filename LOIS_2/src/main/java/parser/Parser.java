@@ -6,8 +6,7 @@
 
 package parser;
 
-
-import static config.Config.*;
+import config.Config;
 
 import java.util.*;
 
@@ -18,34 +17,36 @@ public class Parser {
     private boolean result;
     private String message;
 
-    private TruthTable truthTable;
-
     private final Set<String> ELEMENTS;
+    private final List<String> ATOMS;
 
-    public Parser(String expression) {
+    public Parser(String expression) throws SKNFException {
         this.EXPRESSION = expression;
         ELEMENTS = new HashSet<>();
+        ATOMS = new ArrayList<>();
         result = false;
         message = "";
         try {
-            checkFormula(expression);
-            result = true;
+            checkSymbols();
+            checkBrackets();
+            tree = new ExpressionTree(expression, this);
             message = "Good!";
-        } catch (SKNFException SKNFException) {
-            message = SKNFException.getMessage();
+
+        } catch (SKNFException sknfException) {
+            throw new SKNFException(sknfException.getNumber());
         }
     }
 
-    private void checkFormula(String expression) throws SKNFException {
-        checkSymbols();
-        checkBrackets();
-    }
-
     private void checkSymbols() throws SKNFException {
+        if (EXPRESSION.length() == 1) {
+            if (!Config.SYMBOLS.contains(EXPRESSION)) {
+                throw new SKNFException(6);
+            }
+        }
         for (int i = 0; i < EXPRESSION.length(); i++) {
-            if (!(SYMBOLS.contains("" + EXPRESSION.charAt(i)) || SIGNS.contains("" + EXPRESSION.charAt(i)))) {
+            if (!(Config.SYMBOLS.contains("" + EXPRESSION.charAt(i)) || Config.SIGNS.contains("" + EXPRESSION.charAt(i)))) {
                 String sign = searchSign(EXPRESSION, i);
-                if (!SIGNS.contains(sign)) {
+                if (!Config.SIGNS.contains(sign)) {
                     throw new SKNFException(6);
                 } else {
                     if (sign.length() == 2) {
@@ -104,7 +105,19 @@ public class Parser {
         ELEMENTS.add(element);
     }
 
+    public void addAtoms(String atom) {
+        ATOMS.add(atom);
+    }
+
     public Set<String> getELEMENTS() {
         return ELEMENTS;
+    }
+
+    public List<String> getATOMS() {
+        return ATOMS;
+    }
+
+    public ExpressionTree getTree() {
+        return tree;
     }
 }

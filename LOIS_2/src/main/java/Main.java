@@ -6,11 +6,12 @@
 
 import config.Config;
 import parser.Formula;
-import parser.Parser;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Objects;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -26,13 +27,23 @@ public class Main {
             System.out.println("File not find!!!");
         }
 
+        try(FileWriter writer = new FileWriter(Config.OUT_FILE_PATH, true))
+        {
+            System.out.println(expression);
+            System.out.println();
+            writer.write(expression);
+            writer.write("\n");
 
-        System.out.println(expression);
-        System.out.println();
-//        Parser parser = new Parser(expression);
-        Formula formula = new Formula(expression);
-        System.out.println();
-        System.out.println(formula.getResultParser());
-        System.out.println("\n");
+            Formula formula = new Formula(expression);
+            if(formula.isResult()){
+                System.out.println(formula.getResultParser());
+                System.out.println("\n");
+                writer.write(formula.getResultParser() + "\n");
+                writer.write("\n");
+            }
+        }
+        catch(IOException ex){
+            System.out.println(ex.getMessage());
+        }
     }
 }
