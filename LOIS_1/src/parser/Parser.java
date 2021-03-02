@@ -42,11 +42,11 @@ public class Parser {
             checkAtomsUnic();
 
             result = true;
-            message = "Formula is SKNF!";
+            message = "Formula is Perfect Conjunctive Normal Form!";
 
         } catch (SKNFException SKNFException) {
             message = SKNFException.getMessage();
-            message += "\nFormula isn't SKNF!";
+            message += "\nFormula isn't Perfect Conjunctive Normal Form!";
         }
     }
 
@@ -199,7 +199,7 @@ public class Parser {
                 }
             }
         }
-        System.out.println("TEST");
+//        System.out.println("TEST");
     }
 
     public boolean getResult() {

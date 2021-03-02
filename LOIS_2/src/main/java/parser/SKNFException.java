@@ -46,15 +46,15 @@ public class SKNFException extends Exception {
                 break;
             }
             case 7: {
-                message = "Atom has a conjunction operation!";
+                message = "Disjunction has a conjunction operation!";
                 break;
             }
             case 8: {
-                message = "Elements are repeated in the atom!";
+                message = "Elements are repeated in the disjunction!";
                 break;
             }
             case 9: {
-                message = "Repeated atom!";
+                message = "Repeated disjunction!";
                 break;
             }
             case 10: {
