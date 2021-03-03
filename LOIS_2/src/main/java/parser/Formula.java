@@ -2,8 +2,6 @@ package parser;
 
 import config.Config;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,31 +30,24 @@ public class Formula {
             ELEMENTS = new ArrayList<>(parser.getELEMENTS());
             createTruthTable();
             formulaSDNF = generateFormula();
-            output();
+//            output();
         } catch (SKNFException exception) {
             System.out.println(exception.getMessage());
         }
     }
 
-    private void output() {
-        try (FileWriter writer = new FileWriter(Config.OUT_FILE_PATH, true)) {
-            ELEMENTS.add("f");
-            truthTable.output(ELEMENTS);
-            truthTable.outputInFile(ELEMENTS);
-            System.out.println(formulaSDNF);
-            writer.write(formulaSDNF);
-        } catch (IOException ex) {
-            System.out.println(ex.getMessage());
-        }
+    public void output() {
+        ELEMENTS.add("f");
+        truthTable.output(ELEMENTS);
+        System.out.println(formulaSDNF);
     }
 
     private void createTruthTable() throws SKNFException {
         truthTable = new TruthTable(ELEMENTS.size());
         for (int i = 0; i < truthTable.getCountRows(); i++) {
-            System.out.println(i);
             truthTable.setValueRow(i, determineValue(truthTable.getRow(i), tree));
         }
-        System.out.println("Done!");
+//        System.out.println("Don?e!");
     }
 
     private boolean determineValue(int[] value, ExpressionTree tree) throws SKNFException {
@@ -96,16 +87,13 @@ public class Formula {
         if (truthTable.countDis() == 0) {
             return "0";
         }
-        if (truthTable.countDis() == truthTable.getCountRows()) {
-            return "1";
-        }
-        System.out.println("Print brackets: ");
+//        if (truthTable.countDis() == truthTable.getCountRows()) {
+//            return "1";
+//        }
         for (int i = 0; i < truthTable.countDis() - 1; i++) {
-            if (i % 1000 == 0) System.out.println(i);
             builder.append("(");
         }
         int count = 0;
-        System.out.println("generate dis:");
         for (int j = 0; j < truthTable.getCountRows(); j++) {
             if (truthTable.getValueRow(j) == 1) {
                 builder.append(createAtom(ELEMENTS.size(), truthTable.getTable()[j]));
@@ -115,7 +103,6 @@ public class Formula {
                 builder.append(MAIN_SIGN);
                 count++;
             }
-            if (j % 1000 == 0) System.out.println(j);
         }
         builder.setLength(builder.length() - 2);
         return builder.toString();
@@ -161,5 +148,9 @@ public class Formula {
 
     public boolean isResult() {
         return result;
+    }
+
+    public String getFormulaSDNF() {
+        return formulaSDNF;
     }
 }

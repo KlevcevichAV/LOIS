@@ -18,6 +18,7 @@ public class Config {
     public static final String OUT_FILE_PATH = System.getProperty("user.dir") + "/files/out/" + FILE_NAME + "." + FILE_FORMAT;
     public static final List<String> SYMBOLS = new ArrayList<>(Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z","0","1"));
     public static final List<String> SIGNS = new ArrayList<>(Arrays.asList("!", "/\\", "\\/", "(", ")", "->", "~"));
+    public static final List<String> OPERATIONS = new ArrayList<>(Arrays.asList("/\\", "\\/", "->", "~"));
     public static final String CONJUNCTION = "/\\";
     public static final String DISJUNCTION = "\\/";
     public static final String NEGATION = "!";
