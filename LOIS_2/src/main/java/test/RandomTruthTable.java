@@ -8,7 +8,7 @@ package test;
 
 public class RandomTruthTable {
     private final int rows;
-    private int[][] table;
+    private final int[][] table;
     private int countCon;
 
     public RandomTruthTable(int n) {

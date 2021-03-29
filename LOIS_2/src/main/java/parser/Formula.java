@@ -13,15 +13,12 @@ import java.util.List;
 import static config.Config.*;
 
 public class Formula {
-    private String formula;
     private String formulaSDNF;
     private ExpressionTree tree;
     private TruthTable truthTable;
     private List<String> ELEMENTS;
     private Parser parser;
     private boolean result = true;
-    private final String MAIN_SIGN = "\\/";
-    private final String SIGN = "/\\";
 
     public Formula(String expression) {
         try {
@@ -30,7 +27,6 @@ public class Formula {
                 throw new SKNFException("1".equals(expression) ? 14 : 13);
             }
             parser = new Parser(expression);
-            formula = expression;
             tree = parser.getTree();
             ELEMENTS = new ArrayList<>(parser.getELEMENTS());
             createTruthTable();
@@ -92,12 +88,7 @@ public class Formula {
         if (truthTable.countDis() == 0) {
             return "0";
         }
-//        if (truthTable.countDis() == truthTable.getCountRows()) {
-//            return "1";
-//        }
-        for (int i = 0; i < truthTable.countDis() - 1; i++) {
-            builder.append("(");
-        }
+        builder.append("(".repeat(Math.max(0, truthTable.countDis() - 1)));
         int count = 0;
         for (int j = 0; j < truthTable.getCountRows(); j++) {
             if (truthTable.getValueRow(j) == 1) {
@@ -105,6 +96,7 @@ public class Formula {
                 if (count != 0) {
                     builder.append(")");
                 }
+                String MAIN_SIGN = "\\/";
                 builder.append(MAIN_SIGN);
                 count++;
             }
@@ -115,15 +107,14 @@ public class Formula {
 
     private String createAtom(int countElements, int[] rowTruthTable) {
         StringBuilder atom = new StringBuilder();
-        for (int i = 0; i < countElements - 1; i++) {
-            atom.append("(");
-        }
+        atom.append("(".repeat(Math.max(0, countElements - 1)));
         int count = 0;
         for (int i = 0; i < countElements; i++) {
             atom.append((rowTruthTable[i] == 1) ? Config.SYMBOLS.get(i) : ("(!" + Config.SYMBOLS.get(i) + ")"));
             if (count != 0) {
                 atom.append(")");
             }
+            String SIGN = "/\\";
             atom.append(SIGN);
             count++;
         }
@@ -133,22 +124,6 @@ public class Formula {
 
     public String getResultParser() {
         return parser.getMessage();
-    }
-
-    public String getFormula() {
-        return formula;
-    }
-
-    public ExpressionTree getTree() {
-        return tree;
-    }
-
-    public TruthTable getTruthTable() {
-        return truthTable;
-    }
-
-    public List<String> getELEMENTS() {
-        return ELEMENTS;
     }
 
     public boolean isResult() {

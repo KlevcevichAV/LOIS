@@ -13,18 +13,14 @@ import java.util.*;
 public class Parser {
     private final String EXPRESSION;
 
-    private ExpressionTree tree;
-    private boolean result;
+    private final ExpressionTree tree;
     private String message;
 
     private final Set<String> ELEMENTS;
-    private final List<String> ATOMS;
 
     public Parser(String expression) throws SKNFException {
         this.EXPRESSION = expression;
         ELEMENTS = new HashSet<>();
-        ATOMS = new ArrayList<>();
-        result = false;
         message = "";
         try {
             checkSymbols();
@@ -93,10 +89,6 @@ public class Parser {
         }
     }
 
-    public boolean getResult() {
-        return result;
-    }
-
     public String getMessage() {
         return message;
     }
@@ -105,16 +97,8 @@ public class Parser {
         ELEMENTS.add(element);
     }
 
-    public void addAtoms(String atom) {
-        ATOMS.add(atom);
-    }
-
     public Set<String> getELEMENTS() {
         return ELEMENTS;
-    }
-
-    public List<String> getATOMS() {
-        return ATOMS;
     }
 
     public ExpressionTree getTree() {

@@ -9,7 +9,7 @@ package parser;
 import config.Config;
 
 public class ExpressionTree {
-    private String expression;
+    private final String expression;
     private String operation;
     private ExpressionTree left;
     private ExpressionTree right;

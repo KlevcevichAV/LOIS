@@ -16,11 +16,11 @@ import java.util.Scanner;
 
 public class Test {
     private final List<String> test;
-    private final int COUNT_QUESTIONS = 10;
     private final String MAIN_SIGN = "/\\";
     private final String SIGN = "\\/";
     public Test() {
         test = new ArrayList<>();
+        int COUNT_QUESTIONS = 10;
         for (int i = 0; i < COUNT_QUESTIONS; i++) {
             generateFormula();
         }
@@ -49,7 +49,7 @@ public class Test {
         if ((checkTrue % 2 == 0)) {
             test.add(builder.toString());
         } else {
-            String wrongExpression = makeError(builder.toString(), countElements);
+            String wrongExpression = makeError(builder.toString());
             test.add(wrongExpression);
         }
     }
@@ -72,7 +72,7 @@ public class Test {
         return atom.toString();
     }
 
-    private String makeError(String expression, int countElements) {
+    private String makeError(String expression) {
         int typeError = (int) (Math.random() * 3);
         switch (typeError) {
 //            change con on dis

@@ -22,23 +22,12 @@ public class Test {
         }
     }
 
-    private void generateFormula() {
-    }
-
-    private String copy(String expression, int start, int end) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = start; i < end; i++) {
-            stringBuilder.append(expression.charAt(i));
-        }
-        return stringBuilder.toString();
-    }
-
     public void run() {
         int result = 0;
         for (int i = 0; i < COUNT_QUESTIONS; i++) {
             System.out.println("\t" + (i + 1) + ". " + test.get(i).getQuestionFormula());
             for (int j = 0; j < Question.AMOUNT_VARIANTS; j++) {
-                System.out.println("\t\t" + (j + 1) + ". " +test.get(i).getVariants().get(j));
+                System.out.println("\t\t" + (j + 1) + ". " + test.get(i).getVariants().get(j));
             }
             System.out.print("Your choice: ");
             Scanner in = new Scanner(System.in);

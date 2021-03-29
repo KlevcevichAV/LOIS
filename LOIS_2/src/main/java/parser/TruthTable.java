@@ -6,10 +6,6 @@
 
 package parser;
 
-import config.Config;
-
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.List;
 
 public class TruthTable {
@@ -40,7 +36,7 @@ public class TruthTable {
         return table[i];
     }
 
-    public int getValueRow(int i){
+    public int getValueRow(int i) {
         return table[i][countElements];
     }
 
@@ -52,10 +48,10 @@ public class TruthTable {
         table[i][countElements] = value ? 1 : 0;
     }
 
-    public int countDis(){
+    public int countDis() {
         int result = 0;
-        for(int i = 0; i < countRows; i++){
-            if(table[i][countElements] == 1){
+        for (int i = 0; i < countRows; i++) {
+            if (table[i][countElements] == 1) {
                 result++;
             }
         }
@@ -63,7 +59,7 @@ public class TruthTable {
     }
 
     public void output(List<String> elements) {
-        for (String element : elements){
+        for (String element : elements) {
             System.out.print(element + " ");
         }
         System.out.println();
@@ -74,25 +70,5 @@ public class TruthTable {
             System.out.println();
         }
     }
-
-    public void outputInFile(List<String> elements){
-        try (FileWriter writer = new FileWriter(Config.OUT_FILE_PATH, false))
-        {
-            for (String element : elements){
-                writer.write(element + " ");
-            }
-            writer.write("\n");
-            for (int i = 0; i < countRows; i++) {
-                for (int j = 0; j <= countElements; j++) {
-                    writer.write(table[i][j] + " ");
-                }
-                writer.write("\n");
-            }
-        }
-        catch(IOException ex){
-            System.out.println(ex.getMessage());
-        }
-    }
-
 
 }

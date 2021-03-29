@@ -12,10 +12,10 @@ import java.util.*;
 
 public class Parser {
     private final String EXPRESSION;
+    //    private final String MAIN_SIGN = "\\/";
+//СДНФ
     private final String MAIN_SIGN = "/\\";
-    private final String SIGN = "\\/";
 
-    private ExpressionTree tree;
     private boolean result;
     private String message;
 
@@ -31,7 +31,7 @@ public class Parser {
         try {
             checkSymbols();
             checkBrackets();
-            tree = new ExpressionTree(expression, this);
+            ExpressionTree tree = new ExpressionTree(expression, this);
             checkNegation(tree, 0);
             searchAtoms(tree);
             if (ATOMS.size() != ATOMS.stream().distinct().count()) {
@@ -39,7 +39,7 @@ public class Parser {
             }
             checkAtomsForAllElements();
             checkAtomsForOperations();
-            checkAtomsUnic();
+            checkAtomsUnics();
 
             result = true;
             message = "Formula is Perfect Conjunctive Normal Form!";
@@ -132,7 +132,7 @@ public class Parser {
             if (Objects.nonNull(tree.getRight())) {
                 throw new SKNFException(10);
             }
-            if ("!".equals(tree.getOperation())){
+            if ("!".equals(tree.getOperation())) {
                 throw new SKNFException(12);
             }
             if (Objects.nonNull(tree.getLeft())) checkNegation(tree.getLeft(), 1);
@@ -150,9 +150,6 @@ public class Parser {
                     if (element.equals("" + atom.charAt(i))) {
                         count++;
                     }
-//                    if (atom.charAt(i) == '!') {
-//                        i++;
-//                    }
                 }
                 if (count > 1) throw new SKNFException(8);
             }
@@ -168,16 +165,16 @@ public class Parser {
         }
     }
 
-    private void checkAtomsUnic() throws SKNFException {
+    private void checkAtomsUnics() throws SKNFException {
         List<String> newList = new ArrayList<>(ATOMS);
         List<List<String>> elements = new ArrayList<>(new ArrayList<>());
-        for (int i = 0; i < newList.size(); i++) {
+        for (String s : newList) {
             List<String> tempList = new ArrayList<>();
-            for (int j = 0; j < newList.get(i).length(); j++) {
-                String temp = "" + newList.get(i).charAt(j);
+            for (int j = 0; j < s.length(); j++) {
+                String temp = "" + s.charAt(j);
                 if ("!".equals(temp)) {
                     j++;
-                    temp += newList.get(i).charAt(j);
+                    temp += s.charAt(j);
                     tempList.add(temp);
                     continue;
                 }
@@ -188,12 +185,12 @@ public class Parser {
             elements.add(tempList);
         }
         for (int i = 0; i < elements.size() - 1; i++) {
-            Collections.sort(elements.get(i), Collections.reverseOrder());
+            elements.get(i).sort(Collections.reverseOrder());
         }
         for (int i = 0; i < elements.size() - 1; i++) {
             for (int j = 0; j < elements.size(); j++) {
                 if (i != j) {
-                    if(elements.get(i).equals(elements.get(j))){
+                    if (elements.get(i).equals(elements.get(j))) {
                         throw new SKNFException(9);
                     }
                 }
@@ -214,15 +211,4 @@ public class Parser {
         ELEMENTS.add(element);
     }
 
-    public void addAtoms(String atom) {
-        ATOMS.add(atom);
-    }
-
-    public Set<String> getELEMENTS() {
-        return ELEMENTS;
-    }
-
-    public List<String> getATOMS() {
-        return ATOMS;
-    }
 }

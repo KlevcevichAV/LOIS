@@ -8,14 +8,10 @@ package parser;
 
 public class SKNFException extends Exception {
     private String message;
-    private int number;
+    private final int number;
 
     public String getMessage() {
         return message;
-    }
-
-    public SKNFException(String message) {
-        this.message = message;
     }
 
     public SKNFException(int number) {

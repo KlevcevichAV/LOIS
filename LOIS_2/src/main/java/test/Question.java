@@ -15,17 +15,12 @@ import java.util.List;
 import static config.Config.*;
 
 public class Question {
-    private String questionFormula;
-    private String result;
-    private List<String> variants;
-    private Formula formula;
-    private final String SIGN = "/\\";
-    private final String MAIN_SIGN = "\\/";
+    private final String questionFormula;
+    private final String result;
+    private final List<String> variants;
+    private final Formula formula;
     public static final int AMOUNT_VARIANTS = 5;
 
-
-    private String previousAtom;
-    private String previousOperation;
 
     public Question() {
         variants = new ArrayList<>();
@@ -56,8 +51,8 @@ public class Question {
 
     private String generateFormula(int amountElements, int amountOperation) {
         StringBuilder builder = new StringBuilder(StringUtils.repeat('(', amountOperation));
-        previousAtom = generateAtom(amountElements);
-        previousOperation = "";
+        String previousAtom = generateAtom(amountElements);
+        String previousOperation = "";
         builder.append(previousAtom);
         for (int i = 0; i < amountOperation; i++) {
             int numberOperation = (int) (Math.random() * OPERATIONS.size());
@@ -91,6 +86,7 @@ public class Question {
                 if (count != 0) {
                     builder.append(")");
                 }
+                String MAIN_SIGN = "\\/";
                 builder.append(MAIN_SIGN);
                 count++;
             }
@@ -101,15 +97,14 @@ public class Question {
 
     private String generateAtom(int countElements, int[] rowTruthTable) {
         StringBuilder atom = new StringBuilder();
-        for (int i = 0; i < countElements - 1; i++) {
-            atom.append("(");
-        }
+        atom.append("(".repeat(Math.max(0, countElements - 1)));
         int count = 0;
         for (int i = 0; i < countElements; i++) {
             atom.append((rowTruthTable[i] == 0) ? Config.SYMBOLS.get(i) : ("(!" + Config.SYMBOLS.get(i) + ")"));
             if (count != 0) {
                 atom.append(")");
             }
+            String SIGN = "/\\";
             atom.append(SIGN);
             count++;
         }
@@ -127,10 +122,6 @@ public class Question {
 
     public List<String> getVariants() {
         return variants;
-    }
-
-    public int getAMOUNT_VARIANTS() {
-        return AMOUNT_VARIANTS;
     }
 
     public void output() {
