@@ -1,12 +1,11 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 // Лабораторная работа №2 по дисциплине ЛОИС
-// Вариант 9: Построить СДНФ для заданной формулы
+// Вариант 8: Построить СКНФ для заданной формулы
 // Выполнена студентом грруппы 821701 БГУИР Клевцевич Александр Владимирович
 // Класс предназначен для проверки формулы и для проверки знаний пользователя
 
 import config.Config;
 import parser.Formula;
-import test.Test;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -34,7 +33,5 @@ public class Main {
             System.out.println(formula.getResultParser());
             System.out.println("\n");
         }
-        Test test = new Test();
-        test.run();
     }
 }

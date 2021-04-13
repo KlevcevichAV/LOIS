@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 // Лабораторная работа №2 по дисциплине ЛОИС
-// Вариант 9: Построить СДНФ для заданной формулы
+// Вариант 8: Построить СКНФ для заданной формулы
 // Выполнена студентом грруппы 821701 БГУИР Клевцевич Александр Владимирович
 // Класс предназначен для создания и хранения формулы
 package parser;
@@ -13,7 +13,7 @@ import java.util.List;
 import static config.Config.*;
 
 public class Formula {
-    private String formulaSDNF;
+    private String formulaSKNF;
     private ExpressionTree tree;
     private TruthTable truthTable;
     private List<String> ELEMENTS;
@@ -30,7 +30,7 @@ public class Formula {
             tree = parser.getTree();
             ELEMENTS = new ArrayList<>(parser.getELEMENTS());
             createTruthTable();
-            formulaSDNF = generateFormula();
+            formulaSKNF = generateFormula();
 //            output();
         } catch (SKNFException exception) {
             System.out.println(exception.getMessage());
@@ -40,7 +40,7 @@ public class Formula {
     public void output() {
         ELEMENTS.add("f");
         truthTable.output(ELEMENTS);
-        System.out.println(formulaSDNF);
+        System.out.println(formulaSKNF);
     }
 
     private void createTruthTable() throws SKNFException {
@@ -91,12 +91,13 @@ public class Formula {
         builder.append("(".repeat(Math.max(0, truthTable.countDis() - 1)));
         int count = 0;
         for (int j = 0; j < truthTable.getCountRows(); j++) {
-            if (truthTable.getValueRow(j) == 1) {
+            if (truthTable.getValueRow(j) == 0) {
                 builder.append(createAtom(ELEMENTS.size(), truthTable.getTable()[j]));
                 if (count != 0) {
                     builder.append(")");
                 }
-                String MAIN_SIGN = "\\/";
+//                String MAIN_SIGN = "\\/";
+                String MAIN_SIGN = "/\\";
                 builder.append(MAIN_SIGN);
                 count++;
             }
@@ -110,11 +111,12 @@ public class Formula {
         atom.append("(".repeat(Math.max(0, countElements - 1)));
         int count = 0;
         for (int i = 0; i < countElements; i++) {
-            atom.append((rowTruthTable[i] == 1) ? Config.SYMBOLS.get(i) : ("(!" + Config.SYMBOLS.get(i) + ")"));
+            atom.append((rowTruthTable[i] == 0) ? Config.SYMBOLS.get(i) : ("(!" + Config.SYMBOLS.get(i) + ")"));
             if (count != 0) {
                 atom.append(")");
             }
-            String SIGN = "/\\";
+//            String SIGN = "/\\";
+            String SIGN = "\\/";
             atom.append(SIGN);
             count++;
         }
@@ -128,9 +130,5 @@ public class Formula {
 
     public boolean isResult() {
         return result;
-    }
-
-    public String getFormulaSDNF() {
-        return formulaSDNF;
     }
 }
