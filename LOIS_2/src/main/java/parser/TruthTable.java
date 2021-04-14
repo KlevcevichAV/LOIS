@@ -51,7 +51,7 @@ public class TruthTable {
     public int countDis() {
         int result = 0;
         for (int i = 0; i < countRows; i++) {
-            if (table[i][countElements] == 1) {
+            if (table[i][countElements] == 0) {
                 result++;
             }
         }
