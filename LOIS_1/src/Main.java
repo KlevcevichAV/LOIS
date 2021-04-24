@@ -28,11 +28,15 @@ public class Main {
 
 
         System.out.println();
-        Parser parser = new Parser(expression);
-        System.out.println(expression);
-        System.out.println();
-        System.out.println(parser.getMessage());
-        System.out.println("\n");
+        try {
+            Parser parser = new Parser(expression);
+            System.out.println(expression);
+            System.out.println();
+            System.out.println(parser.getMessage());
+            System.out.println("\n");
+        } catch (Exception e) {
+            System.out.println("Formula isn't Perfect Conjunctive Normal Form!");
+        }
         Test test = new Test();
         test.run();
     }

@@ -20,6 +20,9 @@ public class ExpressionTree {
         this.root = root;
         if (expression.length() == 1) {
             left = right = null;
+            if (!Config.SYMBOLS.contains(expression)) {
+                throw new SKNFException(3);
+            }
             root.addElements(expression);
             return;
         }
